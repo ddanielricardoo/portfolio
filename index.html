@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" style=""><head>
+<html lang="en" data-theme="light"><head>
   
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -8,11 +8,34 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <style data-purpose="custom-fonts">
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    :root {
+      --bg: #f3f3f0;
+      --surface: #ffffff;
+      --surface-alt: #e9e9e5;
+      --text: #111111;
+      --muted: #6b6f76;
+      --border: #d7d7d1;
+      --nav-bg: rgba(248, 248, 245, 0.88);
+      --tooltip-bg: rgba(20, 20, 20, 0.94);
+      --shadow: rgba(25, 25, 25, 0.14);
+    }
+    html[data-theme="dark"] {
+      --bg: #111111;
+      --surface: #171717;
+      --surface-alt: #141414;
+      --text: #ffffff;
+      --muted: #9ca3af;
+      --border: #292929;
+      --nav-bg: rgba(26, 26, 26, 0.9);
+      --tooltip-bg: rgba(24, 24, 24, 0.94);
+      --shadow: rgba(0, 0, 0, 0.34);
+    }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #111111;
-      color: #ffffff;
+      background-color: var(--bg);
+      color: var(--text);
       overflow-x: hidden;
+      transition: background-color 0.35s ease, color 0.35s ease;
     }
   </style>
 <style data-purpose="custom-animations">
@@ -57,13 +80,209 @@
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
     }
 
+    /* Hero intro letters + interactive name */
     .hero-intro-letter {
       display: inline-block;
       transition: transform 0.35s ease;
     }
     .stick-letter {
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      will-change: transform;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+      transform-origin: center bottom;
+      will-change: transform, color;
+    }
+    #stick-word {
+      color: inherit;
+      text-decoration: none;
+    }
+    #stick-word:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 8px;
+      border-radius: 0.08em;
+    }
+    .hero-greeting {
+      margin-bottom: 0.06em;
+    }
+    .hero-title {
+      font-size: clamp(3.5rem, 10vw, 10rem);
+    }
+    .name-tooltip {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      background: var(--tooltip-bg);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(10px);
+      transform: translate(14px, 14px) scale(0.96);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .name-tooltip.visible {
+      opacity: 1;
+      transform: translate(14px, 14px) scale(1);
+    }
+    .about-scroll-section {
+      position: relative;
+      height: 245vh;
+      border-top: 1px solid var(--border);
+    }
+    .about-sticky {
+      position: sticky;
+      top: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 8rem 1rem 4rem;
+    }
+    .about-layout {
+      width: min(100%, 62rem);
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(15rem, 0.68fr);
+      align-items: center;
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+    .about-copy {
+      font-size: clamp(1.65rem, 2.3vw, 2.65rem);
+    }
+    .about-scroll-line {
+      display: inline;
+      color: color-mix(in srgb, var(--text) 16%, transparent);
+      transition: color 0.16s linear;
+    }
+    .about-scroll-line strong {
+      font-weight: 800;
+    }
+    .about-sticky .tech-wrapper {
+      opacity: 0;
+      will-change: opacity, translate, scale;
+    }
+    .about-portrait {
+      position: relative;
+      z-index: 20;
+      margin: 0;
+      will-change: translate, scale, opacity;
+    }
+    .about-portrait-frame {
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 70px var(--shadow);
+      cursor: default;
+    }
+    .about-portrait-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 50%;
+      transform: scale(1.035);
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .about-portrait-frame:hover img { transform: scale(1.055); }
+    .about-portrait figcaption {
+      margin-top: 0.85rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    @media (min-width: 768px) {
+      .about-portrait {
+        width: calc(100% + 1rem);
+        justify-self: center;
+      }
+    }
+    .nav-shell {
+      background: var(--nav-bg) !important;
+      border-color: var(--border) !important;
+      color: var(--text);
+    }
+    .nav-shell a { color: var(--muted) !important; }
+    .nav-shell a:hover { color: var(--text) !important; }
+    .theme-toggle {
+      position: relative;
+      width: 3.5rem;
+      height: 1.9rem;
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-around;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--surface) 72%, transparent);
+      cursor: pointer;
+      transition: border-color 0.25s ease, background-color 0.25s ease;
+    }
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      left: 0.2rem;
+      top: 0.2rem;
+      width: 1.4rem;
+      height: 1.4rem;
+      border-radius: 50%;
+      background: var(--text);
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+    }
+    html[data-theme="dark"] .theme-toggle::after { transform: translateX(1.48rem); }
+    .theme-icon {
+      position: relative;
+      z-index: 1;
+      width: 1.35rem;
+      text-align: center;
+      font-size: 0.78rem;
+      line-height: 1;
+      mix-blend-mode: difference;
+      color: #ffffff;
+    }
+    .primary-cta { background: var(--text) !important; color: var(--bg) !important; }
+    .primary-cta:hover { opacity: 0.82; }
+    #home .text-white, #projects h2, #clients h2 { color: var(--text) !important; }
+    .text-gray-300, .text-gray-400, .text-gray-500 { color: var(--muted) !important; }
+    #projects { background: var(--surface-alt) !important; }
+    #projects, #clients, footer { border-color: var(--border) !important; }
+    #clients img { border-color: var(--border); }
+    .carousel-fade-left { background-image: linear-gradient(to right, var(--surface-alt), transparent) !important; }
+    .carousel-fade-right { background-image: linear-gradient(to left, var(--surface-alt), transparent) !important; }
+    @media (max-width: 640px) {
+      .name-tooltip { display: none; }
+    }
+    @media (max-width: 767px) {
+      .about-scroll-section { height: 235vh; }
+      .about-sticky {
+        position: sticky;
+        min-height: 100vh;
+        padding: 8rem 1.25rem 6rem;
+      }
+      .about-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-copy { text-align: left; }
+      .about-portrait { width: min(78vw, 21rem); margin-inline: auto; }
+      .about-scroll-line { color: color-mix(in srgb, var(--text) 16%, transparent); }
+    }
+    @media (max-width: 1100px) {
+      .tech-field { display: none !important; }
+    }
+    @media (max-width: 640px) {
+      nav.fixed { top: 1rem; width: calc(100% - 1.25rem); }
+      .nav-shell { width: 100%; gap: 0.7rem !important; padding: 0.65rem 0.8rem !important; justify-content: center; }
+      .nav-shell a { font-size: 0.72rem; }
+      .theme-toggle { width: 3.2rem; height: 1.75rem; }
+      .theme-toggle::after { width: 1.25rem; height: 1.25rem; }
+      html[data-theme="dark"] .theme-toggle::after { transform: translateX(1.36rem); }
     }
 
     .reveal {
@@ -160,11 +379,14 @@
 <body class="antialiased">
 <!-- BEGIN: Navigation -->
 <nav class="fixed top-8 left-1/2 transform -translate-x-1/2 z-50">
-<div class="bg-[#1a1a1a] rounded-full border border-gray-800 px-6 py-3 flex items-center gap-8 shadow-2xl backdrop-blur-md">
+<div class="nav-shell rounded-full border px-6 py-3 flex items-center gap-8 shadow-2xl backdrop-blur-md">
 <a class="text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#home">Home</a>
-<a class="text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#about">About me</a>
 <a class="text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#projects">Projects</a>
+<a class="text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#about">About me</a>
 <a class="text-sm font-medium text-gray-300 hover:text-white transition-colors" href="#clients">Clients</a>
+<button aria-label="Switch to dark theme" aria-pressed="false" class="theme-toggle" id="theme-toggle" type="button">
+<span aria-hidden="true" class="theme-icon">☀</span><span aria-hidden="true" class="theme-icon">☾</span>
+</button>
 </div>
 </nav>
 <!-- END: Navigation -->
@@ -187,16 +409,12 @@
 </div>
 <!-- Main Content -->
 <div class="max-w-5xl w-full z-10 relative pl-4 md:pl-20">
-<h1 class="text-[15vw] md:text-[11rem] lg:text-[12.5rem] font-bold leading-[0.85] tracking-tighter">
-<span class="text-gray-400 block"><span class="hero-intro-letter" data-idx="0" data-color="#9ca3af">e</span><span class="hero-intro-letter" data-idx="1" data-color="#9ca3af">d</span><span class="hero-intro-letter" data-idx="2" data-color="#9ca3af">i</span><span class="hero-intro-letter" data-idx="3" data-color="#9ca3af">t</span><span class="hero-intro-letter" data-idx="4" data-color="#9ca3af">s</span><span class="hero-intro-letter" data-idx="5" data-color="#9ca3af">&nbsp;</span><span class="hero-intro-letter" data-idx="6" data-color="#9ca3af">t</span><span class="hero-intro-letter" data-idx="7" data-color="#9ca3af">h</span><span class="hero-intro-letter" data-idx="8" data-color="#9ca3af">a</span><span class="hero-intro-letter" data-idx="9" data-color="#9ca3af">t</span></span>
-<span class="text-white block">
-<span class="group/stick cursor-default" id="stick-word">
-<span class="hero-intro-letter stick-letter" data-idx="10" data-color="#ff6fa5">s</span><span class="hero-intro-letter stick-letter" data-idx="11" data-color="#38bdf8">t</span><span class="hero-intro-letter stick-letter" data-idx="12" data-color="#facc15">i</span><span class="hero-intro-letter stick-letter" data-idx="13" data-color="#22c55e">c</span><span class="hero-intro-letter stick-letter" data-idx="14" data-color="#3b82f6">k</span><span class="hero-intro-letter stick-letter" data-idx="15" data-color="#fb923c">.</span>
-</span>
-</span>
+<h1 class="hero-title font-bold leading-[0.85] tracking-tighter">
+<span class="hero-greeting text-gray-400 block"><span class="hero-intro-letter" data-idx="0" data-color="#9ca3af">h</span><span class="hero-intro-letter" data-idx="1" data-color="#9ca3af">e</span><span class="hero-intro-letter" data-idx="2" data-color="#9ca3af">y</span><span class="hero-intro-letter" data-idx="3" data-color="#9ca3af">&nbsp;</span><span class="hero-intro-letter" data-idx="4" data-color="#9ca3af">t</span><span class="hero-intro-letter" data-idx="5" data-color="#9ca3af">h</span><span class="hero-intro-letter" data-idx="6" data-color="#9ca3af">e</span><span class="hero-intro-letter" data-idx="7" data-color="#9ca3af">r</span><span class="hero-intro-letter" data-idx="8" data-color="#9ca3af">e</span><span class="hero-intro-letter" data-idx="9" data-color="#9ca3af">,</span></span>
+<span class="text-white block whitespace-nowrap"><span class="hero-intro-letter" data-idx="10" data-color="theme">I</span><span class="hero-intro-letter" data-idx="11" data-color="theme">'</span><span class="hero-intro-letter" data-idx="12" data-color="theme">m</span><span class="hero-intro-letter" data-idx="13" data-color="theme">&nbsp;</span><a aria-label="Visit daniels on Instagram" class="group/stick cursor-pointer" href="https://www.instagram.com/danielricar.do/" id="stick-word" rel="noopener noreferrer" target="_blank"><span class="hero-intro-letter stick-letter" data-idx="14" data-color="theme" data-hover-color="#ff6fa5">d</span><span class="hero-intro-letter stick-letter" data-idx="15" data-color="theme" data-hover-color="#38bdf8">a</span><span class="hero-intro-letter stick-letter" data-idx="16" data-color="theme" data-hover-color="#facc15">n</span><span class="hero-intro-letter stick-letter" data-idx="17" data-color="theme" data-hover-color="#22c55e">i</span><span class="hero-intro-letter stick-letter" data-idx="18" data-color="theme" data-hover-color="#3b82f6">e</span><span class="hero-intro-letter stick-letter" data-idx="19" data-color="theme" data-hover-color="#fb923c">l</span><span class="hero-intro-letter stick-letter" data-idx="20" data-color="theme" data-hover-color="#a78bfa">s</span><span class="hero-intro-letter stick-letter" data-idx="21" data-color="theme" data-hover-color="#f472b6">!</span></a></span>
 </h1>
 <div class="mt-16 flex flex-wrap items-center gap-8">
-<a class="bg-white text-black px-10 py-5 rounded-full text-lg font-semibold flex items-center gap-3 hover:bg-gray-200 transition-colors" href="https://discord.gg/PNhgqRY4g" rel="noopener noreferrer" target="_blank">
+<a class="primary-cta bg-white text-black px-10 py-5 rounded-full text-lg font-semibold flex items-center gap-3 transition-opacity" href="mailto:danieru.media@gmail.com">
           Let's work together
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
@@ -210,56 +428,68 @@
 </a>
 </div>
 </div>
+<div aria-hidden="true" class="name-tooltip" id="name-tooltip">click me &gt;:)</div>
 </main>
 <!-- END: Hero Section -->
 <!-- BEGIN: About / Tech Stack Section -->
-<section class="min-h-screen relative flex items-center justify-center py-32 px-4 border-t border-gray-900" id="about">
-<div class="max-w-4xl mx-auto relative z-10">
+<section class="about-scroll-section" id="about">
+<div class="about-sticky">
+<div class="max-w-6xl w-full mx-auto relative z-10">
 <!-- Tech Pills Background (Absolute positioned around text) -->
-<div class="absolute inset-0 pointer-events-none hidden md:block">
-<div class="absolute top-0 left-[-15%] w-16 h-16 tech-wrapper" style="--rot: -12deg; --delay: 0s;">
+<div class="tech-field absolute inset-0 pointer-events-none hidden md:block">
+<div class="absolute top-[2%] left-[-8%] w-14 h-14 tech-wrapper" style="--rot: -12deg; --delay: 0s;">
 <img alt="DaVinci Resolve" class="tech-pill object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCircigiRnKLttxGvzPXUBO5ikpqqEWMfLc1UCiIzpzxduOm8VefhQuMUpWkD22Bqk1BUWL0TDPWGJDYbq_G3hhEn8qdcrwBof1n532hJwqf5hocyisBdCkFfoiZoKsvEtEA16XQ3OGdVGAfcJxmc9nb1Y1R5eBErrCUMMFIn4LGU2wvdogd8e8I2WN7lmYLYm1rEDcOu768xuacq6P9s-gQR-q1uy118GB79qO_Hi-CYIN5zHujhV5_0HxBgsyd0vJzH8"/>
 </div>
-<div class="absolute top-[20%] left-[-20%] w-16 h-16 tech-wrapper" style="--rot: 6deg; --delay: 0.5s;">
+<div class="absolute top-[29%] left-[-12%] w-14 h-14 tech-wrapper" style="--rot: 6deg; --delay: 0.5s;">
 <img alt="Vegas Pro" class="tech-pill object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO88hXxi9Xtt1_AjtkOSAkFQU6wiydfBTONPeOMnN71BIxriMzV7LFyw2KYWFKM1naL4I0ppafhvN1MlaHm5Y54aRs3UOvUtkmWfKkuuJARUb3VBxYBwkae_OrS7onXZhI9jeW4pmuG-ElOmazXYXeKpe63W5hslcFU_PjKyz7IDhg4NRy586M1LbYfNEsU8o-MUnwwGl-PPLsXvFq7Y00Edkp33yujBpZxZgznNDkmygSRZpURODVpiLQeXthfeW2v38"/>
 </div>
-<div class="absolute top-[45%] left-[-18%] w-16 h-16 tech-wrapper" style="--rot: -6deg; --delay: 1s;">
+<div class="absolute top-[58%] left-[-9%] w-14 h-14 tech-wrapper" style="--rot: -6deg; --delay: 1s;">
 <div class="tech-pill app-badge" style="background:#00005B;color:#9999FF;">Pr</div>
 </div>
-<div class="absolute bottom-[20%] left-[-10%] w-16 h-16 tech-wrapper" style="--rot: 12deg; --delay: 1.5s;">
+<div class="absolute bottom-[2%] left-[-4%] w-14 h-14 tech-wrapper" style="--rot: 12deg; --delay: 1.5s;">
 <div class="tech-pill app-badge" style="background:#00005B;color:#9999FF;">Ae</div>
 </div>
-<div class="absolute top-[-5%] right-[-10%] w-16 h-16 tech-wrapper" style="--rot: 12deg; --delay: 0.2s;">
+<div class="absolute top-[-6%] right-[-8%] w-14 h-14 tech-wrapper" style="--rot: 12deg; --delay: 0.2s;">
 <div class="tech-pill app-badge" style="background:#001E36;color:#31A8FF;">Ps</div>
 </div>
-<div class="absolute top-[15%] right-[-15%] w-16 h-16 tech-wrapper" style="--rot: -6deg; --delay: 0.7s;">
+<div class="absolute top-[24%] right-[-12%] w-14 h-14 tech-wrapper" style="--rot: -6deg; --delay: 0.7s;">
 <div class="tech-pill app-badge" style="background:#330B00;color:#FF9A00;">Ai</div>
 </div>
-<div class="absolute top-[45%] right-[-20%] w-16 h-16 tech-wrapper" style="--rot: 6deg; --delay: 1.2s;">
+<div class="absolute top-[54%] right-[-10%] w-14 h-14 tech-wrapper" style="--rot: 6deg; --delay: 1.2s;">
 <div class="tech-pill app-badge" style="background:#001B26;color:#31A8FF;">Lr</div>
 </div>
-<div class="absolute bottom-[25%] right-[-18%] w-16 h-16 tech-wrapper" style="--rot: -12deg; --delay: 1.7s;">
+<div class="absolute bottom-[3%] right-[-5%] w-14 h-14 tech-wrapper" style="--rot: -12deg; --delay: 1.7s;">
 <div class="tech-pill app-badge" style="background:#430F17;color:#FF3366;">Id</div>
 </div>
 </div>
+<div class="about-layout">
 <!-- Main Text -->
-<div class="text-3xl md:text-5xl font-medium leading-tight text-center md:text-left relative z-20">
+<div class="about-copy font-medium leading-tight relative z-20">
 <p class="mb-8">
-<span class="reveal-inline">hey! I'm <strong>daniels</strong>,</span>
-<span class="reveal-inline">I’m 18 years old and I</span>
-<span class="reveal-inline">have 3 years of experience in video editing.</span>
-<span class="reveal-inline">I’ve worked on different types of videos,</span>
-<span class="reveal-inline">including <strong>VSLs, YouTube, TikTok</strong>,</span>
-<span class="reveal-inline">and <strong>faceless channels.</strong></span>
+<span class="about-scroll-line">hey! I'm <strong>daniels</strong>,</span>
+<span class="about-scroll-line">I’m 19 years old and I</span>
+<span class="about-scroll-line">have 3 years of experience in video editing.</span>
+<span class="about-scroll-line">I’ve worked on different types of videos,</span>
+<span class="about-scroll-line">including <strong>VSLs, YouTube, TikTok</strong>,</span>
+<span class="about-scroll-line">and <strong>faceless channels.</strong></span>
 </p>
 <p>
-<span class="reveal-inline">I can help you <strong>elevate your content</strong> with <span class="float-text-container font-bold cursor-default">
+<span class="about-scroll-line">I can help you <strong>elevate your content</strong> with&nbsp;<span class="float-text-container font-bold cursor-default">
 <span class="hover-letter c-1">e</span><span class="hover-letter c-2">d</span><span class="hover-letter c-3">i</span><span class="hover-letter c-4">t</span><span class="hover-letter c-5">s</span>.
 <span class="hover-letter c-7">t</span><span class="hover-letter c-8">h</span><span class="hover-letter c-9">a</span><span class="hover-letter c-10">t</span>.
 <span class="hover-letter c-12">s</span><span class="hover-letter c-13">t</span><span class="hover-letter c-14">i</span><span class="hover-letter c-15">c</span><span class="hover-letter c-16">k</span>
 </span>.</span><br/><br/></p>
 </div>
+<figure class="about-portrait" id="about-portrait">
+<div class="about-portrait-frame" id="about-portrait-frame">
+<img alt="Daniel Ricardo outdoors wearing glasses" src="daniels-hero.png"/>
 </div>
+<figcaption>Daniel Ricardo AKA daniels.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="name-tooltip" id="photo-tooltip">heya!</div>
 </section>
 <!-- END: About / Tech Stack Section -->
 <!-- BEGIN: Projects Section -->
@@ -288,7 +518,7 @@
             allow="autoplay; encrypted-media"
             class="w-full h-full pointer-events-none"
             frameborder="0"
-            src="https://www.youtube.com/embed/rwXOb4cCa5M?autoplay=1&mute=1&loop=1&playlist=rwXOb4cCa5M&controls=0&modestbranding=1&rel=0&playsinline=1">
+            src="https://www.youtube.com/embed/bSBQhyYyMH4?autoplay=1&mute=1&loop=1&playlist=bSBQhyYyMH4&controls=0&modestbranding=1&rel=0&playsinline=1">
         </iframe>
         <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors pointer-events-none"></div>
     </div>
@@ -297,8 +527,8 @@
 <!-- Vertical Video Carousel -->
 <div class="mt-24 overflow-hidden relative w-full rounded-2xl">
 <!-- Gradient Masks -->
-<div class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#141414] to-transparent z-10 pointer-events-none"></div>
-<div class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#141414] to-transparent z-10 pointer-events-none"></div>
+<div class="carousel-fade-left absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#141414] to-transparent z-10 pointer-events-none"></div>
+<div class="carousel-fade-right absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#141414] to-transparent z-10 pointer-events-none"></div>
 <div class="carousel-track gap-6">
 <!-- Set 1 -->
 <div class="w-[280px] flex-shrink-0 aspect-[9/16] rounded-2xl overflow-hidden bg-black shadow-xl">
@@ -353,37 +583,37 @@
 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 md:gap-8">
 <a class="group flex flex-col items-center gap-4 text-center" href="https://www.youtube.com/@WondernatAphexSoybeanDani" rel="noopener noreferrer" target="_blank">
 <div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden border border-gray-800 shadow-2xl group-hover:scale-[1.08] group-hover:border-gray-600 transition-all duration-300">
-<img alt="WASD" class="w-full h-full object-cover" src="assets/wasd.jpg"/>
+<img alt="WASD" class="w-full h-full object-cover" src="client-wasd.jpg"/>
 </div>
 <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">WASD</span>
 </a>
 <a class="group flex flex-col items-center gap-4 text-center" href="https://www.youtube.com/@Polarcub" rel="noopener noreferrer" target="_blank">
 <div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden border border-gray-800 shadow-2xl group-hover:scale-[1.08] group-hover:border-gray-600 transition-all duration-300">
-<img alt="PolarCub" class="w-full h-full object-cover" src="assets/polarcub.jpg"/>
+<img alt="PolarCub" class="w-full h-full object-cover" src="client-polarcub.jpg"/>
 </div>
 <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">PolarCub</span>
 </a>
 <a class="group flex flex-col items-center gap-4 text-center" href="https://www.youtube.com/@Wondernat" rel="noopener noreferrer" target="_blank">
 <div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden border border-gray-800 shadow-2xl group-hover:scale-[1.08] group-hover:border-gray-600 transition-all duration-300">
-<img alt="Wondernat" class="w-full h-full object-cover" src="assets/wondernat.jpg"/>
+<img alt="Wondernat" class="w-full h-full object-cover" src="client-wondernat.jpg"/>
 </div>
 <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Wondernat</span>
 </a>
 <a class="group flex flex-col items-center gap-4 text-center" href="https://www.youtube.com/@aphexkit" rel="noopener noreferrer" target="_blank">
 <div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden border border-gray-800 shadow-2xl group-hover:scale-[1.08] group-hover:border-gray-600 transition-all duration-300">
-<img alt="Aphex" class="w-full h-full object-cover" src="assets/aphex.jpg"/>
+<img alt="Aphex" class="w-full h-full object-cover" src="client-aphex.jpg"/>
 </div>
 <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Aphex</span>
 </a>
 <a class="group flex flex-col items-center gap-4 text-center" href="https://www.youtube.com/@ohsoybean" rel="noopener noreferrer" target="_blank">
 <div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden border border-gray-800 shadow-2xl group-hover:scale-[1.08] group-hover:border-gray-600 transition-all duration-300">
-<img alt="Soybean" class="w-full h-full object-cover" src="assets/soybean.jpg"/>
+<img alt="Soybean" class="w-full h-full object-cover" src="client-soybean.jpg"/>
 </div>
 <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Soybean</span>
 </a>
 <a class="group flex flex-col items-center gap-4 text-center" href="https://www.youtube.com/@jungsensei" rel="noopener noreferrer" target="_blank">
 <div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden border border-gray-800 shadow-2xl group-hover:scale-[1.08] group-hover:border-gray-600 transition-all duration-300">
-<img alt="Daniel Jung" class="w-full h-full object-cover" src="assets/daniel_jung.jpg"/>
+<img alt="Daniel Jung" class="w-full h-full object-cover" src="client-daniel-jung.jpg"/>
 </div>
 <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Daniel Jung</span>
 </a>
@@ -396,8 +626,8 @@
 <div class="max-w-4xl mx-auto flex flex-col items-center gap-6">
 <nav class="flex flex-wrap justify-center gap-6 text-gray-400 font-medium">
 <a class="hover:text-white transition-colors focus:outline-none focus-visible:text-white focus-visible:underline" href="#home">Home</a>
-<a class="hover:text-white transition-colors focus:outline-none focus-visible:text-white focus-visible:underline" href="#about">About me</a>
 <a class="hover:text-white transition-colors focus:outline-none focus-visible:text-white focus-visible:underline" href="#projects">Projects</a>
+<a class="hover:text-white transition-colors focus:outline-none focus-visible:text-white focus-visible:underline" href="#about">About me</a>
 <a class="hover:text-white transition-colors focus:outline-none focus-visible:text-white focus-visible:underline" href="#clients">Clients</a>
 </nav>
 <div class="flex flex-wrap justify-center gap-6 md:gap-10 text-gray-400 font-medium">
@@ -411,12 +641,32 @@
 <!-- END: Footer -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = (() => {
+      try { return window.localStorage?.getItem('daniels-theme') || null; } catch { return null; }
+    })();
+    root.dataset.theme = savedTheme === 'dark' ? 'dark' : 'light';
+    const getThemeTextColor = () => getComputedStyle(root).getPropertyValue('--text').trim() || '#111111';
+    const syncThemeToggle = () => {
+      const isDark = root.dataset.theme === 'dark';
+      themeToggle?.setAttribute('aria-pressed', String(isDark));
+      themeToggle?.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+    };
+    const applyHeroTheme = () => {
+      const color = getThemeTextColor();
+      document.querySelectorAll('[data-color="theme"]').forEach((letter) => {
+        letter.style.color = color;
+      });
+    };
+    syncThemeToggle();
+
     // Hero intro: each letter flashes a color, then settles into its normal look
     const introLetters = document.querySelectorAll('.hero-intro-letter');
     const flashPalette = ['#ff6fa5', '#38bdf8', '#facc15', '#22c55e', '#3b82f6', '#fb923c', '#a78bfa', '#f472b6', '#2dd4bf', '#f87171'];
     introLetters.forEach((el, i) => {
       const flashColor = flashPalette[i % flashPalette.length];
-      const finalColor = el.dataset.color || '#ffffff';
+      const finalColor = el.dataset.color === 'theme' ? getThemeTextColor() : (el.dataset.color || getThemeTextColor());
       el.style.opacity = '0';
       const anim = el.animate(
         [
@@ -434,11 +684,12 @@
       };
     });
 
-    // "stick." reacts to the mouse — subtle, letters shift with the cursor
+    // "daniels!" reacts subtly, with each letter gaining its own color
     const stickWord = document.getElementById('stick-word');
     if (stickWord) {
       const stickLetters = stickWord.querySelectorAll('.stick-letter');
-      const STICK_RADIUS = 100;
+      const nameTooltip = document.getElementById('name-tooltip');
+      const STICK_RADIUS = 92;
       window.addEventListener('mousemove', (e) => {
         stickLetters.forEach((letter) => {
           const rect = letter.getBoundingClientRect();
@@ -449,21 +700,113 @@
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < STICK_RADIUS) {
             const influence = 1 - dist / STICK_RADIUS;
-            const lift = influence * 22;
-            const scale = 1 + influence * 0.15;
-            const tilt = (dx / STICK_RADIUS) * influence * 10;
+            const lift = influence * 7;
+            const scale = 1 + influence * 0.025;
+            const tilt = (dx / STICK_RADIUS) * influence * 2;
             letter.style.transform = `translateY(-${lift}px) scale(${scale}) rotate(${tilt}deg)`;
+            letter.style.color = letter.dataset.hoverColor || getThemeTextColor();
           } else {
             letter.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+            letter.style.color = getThemeTextColor();
           }
         });
       });
       stickWord.addEventListener('mouseleave', () => {
         stickLetters.forEach((letter) => {
           letter.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+          letter.style.color = getThemeTextColor();
         });
+        nameTooltip?.classList.remove('visible');
+      });
+      stickWord.addEventListener('mouseenter', () => {
+        nameTooltip?.classList.add('visible');
+      });
+      stickWord.addEventListener('mousemove', (e) => {
+        if (!nameTooltip) return;
+        nameTooltip.style.left = `${e.clientX}px`;
+        nameTooltip.style.top = `${e.clientY}px`;
       });
     }
+
+    // Scroll-led About: phrases and tools are revealed as the section progresses
+    const aboutSection = document.getElementById('about');
+    const aboutLines = Array.from(document.querySelectorAll('.about-scroll-line'));
+    const aboutTools = Array.from(document.querySelectorAll('#about .tech-wrapper'));
+    const aboutPortrait = document.getElementById('about-portrait');
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    let aboutFramePending = false;
+
+    const updateAbout = () => {
+      aboutFramePending = false;
+      if (!aboutSection) return;
+
+      const rect = aboutSection.getBoundingClientRect();
+      const distance = Math.max(1, aboutSection.offsetHeight - window.innerHeight);
+      const progress = clamp(-rect.top / distance, 0, 1);
+
+      aboutLines.forEach((line, index) => {
+        const start = -0.04 + (index / Math.max(1, aboutLines.length - 1)) * 0.72;
+        const localProgress = clamp((progress - start) / 0.12, 0, 1);
+        const isDark = root.dataset.theme === 'dark';
+        const startShade = isDark ? 42 : 205;
+        const endShade = isDark ? 255 : 17;
+        const shade = Math.round(startShade + (endShade - startShade) * localProgress);
+        line.style.color = `rgb(${shade}, ${shade}, ${shade})`;
+      });
+
+      aboutTools.forEach((tool, index) => {
+        const start = 0.03 + index * 0.055;
+        const localProgress = clamp((progress - start) / 0.15, 0, 1);
+        tool.style.opacity = `${localProgress}`;
+        tool.style.translate = `0 ${(1 - localProgress) * 18}px`;
+        tool.style.scale = `${0.86 + localProgress * 0.14}`;
+      });
+
+      if (aboutPortrait) {
+        const portraitProgress = clamp((progress - 0.02) / 0.9, 0, 1);
+        aboutPortrait.style.translate = `0 ${18 - portraitProgress * 42}px`;
+        aboutPortrait.style.scale = `${0.985 + portraitProgress * 0.015}`;
+        aboutPortrait.style.opacity = `${0.72 + portraitProgress * 0.28}`;
+      }
+    };
+
+    const requestAboutUpdate = () => {
+      if (aboutFramePending) return;
+      aboutFramePending = true;
+      requestAnimationFrame(updateAbout);
+    };
+
+    updateAbout();
+    window.addEventListener('scroll', requestAboutUpdate, { passive: true });
+    window.addEventListener('resize', requestAboutUpdate);
+
+    themeToggle?.addEventListener('click', () => {
+      root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      try { window.localStorage?.setItem('daniels-theme', root.dataset.theme); } catch {}
+      syncThemeToggle();
+      applyHeroTheme();
+      requestAboutUpdate();
+    });
+
+    // Small rotating greeting easter egg on the About portrait
+    const portraitFrame = document.getElementById('about-portrait-frame');
+    const photoTooltip = document.getElementById('photo-tooltip');
+    const photoGreetings = ['heya!', 'hello there', 'wassup!!', 'hey hey'];
+    let greetingIndex = 0;
+    portraitFrame?.addEventListener('mouseenter', () => {
+      if (!photoTooltip) return;
+      photoTooltip.textContent = photoGreetings[greetingIndex];
+      greetingIndex = (greetingIndex + 1) % photoGreetings.length;
+      photoTooltip.classList.add('visible');
+    });
+    portraitFrame?.addEventListener('mousemove', (event) => {
+      if (!photoTooltip) return;
+      photoTooltip.style.left = `${event.clientX}px`;
+      photoTooltip.style.top = `${event.clientY}px`;
+    });
+    portraitFrame?.addEventListener('mouseleave', () => {
+      photoTooltip?.classList.remove('visible');
+    });
 
     // Existing simple reveals
     const reveals = document.querySelectorAll('.reveal');
